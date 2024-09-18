@@ -15,10 +15,10 @@ repos:
       - id: mixed-line-ending
 
   - repo: https://github.com/astral-sh/ruff-pre-commit
-    rev: "v0.6.5"
+    rev: 'v0.6.5'
     hooks:
       - id: ruff
-        args: ["--fix"]
+        args: ['--fix']
       - id: ruff-format
 
   - repo: https://github.com/pre-commit/mirrors-prettier
