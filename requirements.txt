@@ -9,3 +9,4 @@ uvicorn
 xarray>=2022.06
 zarr
 fastapi-cache2 @ git+https://github.com/andersy005/fastapi-cache@pydantic-v2-compat # for pydantic v2 compatilibity
+universal_pathlib

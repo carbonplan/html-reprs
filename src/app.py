@@ -12,6 +12,7 @@ from fastapi_cache import FastAPICache
 from fastapi_cache.backends.inmemory import InMemoryBackend
 from fastapi_cache.decorator import cache
 
+from .helpers import sanitize_url
 from .log import get_logger
 
 origins = ['*']
@@ -85,10 +86,14 @@ def xarray(
     start_time = time.time()
 
     error_message = f'❌ An error occurred while fetching the data from URL: {url}'
+    # sanitize the URL
+    logger.info('🧹 Sanitizing URL..')
+    sanitized_url = sanitize_url(url.unicode_string())
+    logger.info(f'🧹 Sanitized URL: {sanitized_url}')
 
     try:
         logger.info(f'📂 Attempting to open dataset from URL: {url}')
-        with xr.open_dataset(url.unicode_string(), engine='zarr', chunks={}) as ds:
+        with xr.open_dataset(sanitize_url, engine='zarr', chunks={}) as ds:
             logger.info('✅ Successfully opened dataset. Generating HTML representation.')
             html = ds._repr_html_().strip()
 
@@ -99,7 +104,7 @@ def xarray(
         processing_time = end_time - start_time
         logger.info(f'🏁 Request processed successfully in {processing_time:.2f} seconds')
 
-        return {'html': html, 'dataset': url}
+        return {'html': html, 'url': url, 'sanitized_url': sanitized_url}
 
     except (zarr.errors.GroupNotFoundError, FileNotFoundError):
         message = traceback.format_exc()
