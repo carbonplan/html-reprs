@@ -1,42 +1,54 @@
-# fly.toml file generated for html-reprs on 2022-09-08T19:34:42-06:00
-
 app = "html-reprs"
 kill_signal = "SIGINT"
 kill_timeout = 5
-processes = []
+
+primary_region = "dfw"
+
 
 [build]
-  builder = "paketobuildpacks/builder:base"
+builder = "heroku/builder:24"
+buildpacks = ["heroku/buildpack-python:0.17.0"]
+
+
+[[vm]]
+  size = "shared-cpu-1x"
+  memory = "512mb"
+
 
 [env]
-  PORT = "8080"
+PORT = "8000"
 
-[experimental]
-  allowed_public_ports = []
-  auto_rollback = true
+[processes]
+  app = "gunicorn -w 1 -k uvicorn.workers.UvicornWorker src.app:app"
 
 [[services]]
-  http_checks = []
-  internal_port = 8080
-  processes = ["app"]
-  protocol = "tcp"
-  script_checks = []
-  [services.concurrency]
-    hard_limit = 25
-    soft_limit = 20
-    type = "connections"
+processes = ["app"]
+protocol = "tcp"
+internal_port = 8000
+force_https = true
+auto_stop_machines = true
+auto_start_machines = true
+min_machines_running = 0
 
-  [[services.ports]]
-    force_https = true
-    handlers = ["http"]
-    port = 80
+[[services.ports]]
+port = 80
+handlers = ["http"]
 
-  [[services.ports]]
-    handlers = ["tls", "http"]
-    port = 443
+[[services.ports]]
+port = 443
+handlers = ["tls", "http"]
+[services.concurrency]
+type = "connections"
 
-  [[services.tcp_checks]]
-    grace_period = "1s"
-    interval = "15s"
-    restart_limit = 0
-    timeout = "2s"
+
+[[services.tcp_checks]]
+interval = "15s"
+timeout = "3s"
+grace_period = "5s"
+restart_limit = 0
+
+[[services.http_checks]]
+path = "/"
+grace_period = "30s"
+interval = "1m"
+timeout = "15s"

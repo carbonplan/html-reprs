@@ -36,7 +36,7 @@ def xarray(
     error_message = f'An error occurred while fetching the data from URL: {url}'
 
     try:
-        with xr.open_dataset(url, engine='zarr', chunks={}) as ds:
+        with xr.open_dataset(url.unicode_string(), engine='zarr', chunks={}) as ds:
             html = ds._repr_html_().strip()
 
         del ds
