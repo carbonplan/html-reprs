@@ -93,7 +93,7 @@ def xarray(
 
     try:
         logger.info(f'📂 Attempting to open dataset from URL: {url}')
-        with xr.open_dataset(sanitize_url, engine='zarr', chunks={}) as ds:
+        with xr.open_dataset(sanitized_url, engine='zarr', chunks={}) as ds:
             logger.info('✅ Successfully opened dataset. Generating HTML representation.')
             html = ds._repr_html_().strip()
 
