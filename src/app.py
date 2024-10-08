@@ -69,7 +69,7 @@ def index():
 
 @app.get('/xarray/')
 @cache(namespace='html-reprs')
-def xarray(
+async def xarray(
     url: pydantic.AnyUrl = Query(
         ...,
         description='URL to a zarr store',
@@ -93,9 +93,9 @@ def xarray(
 
     try:
         logger.info(f'📂 Attempting to open dataset from URL: {url}')
-        with xr.open_dataset(sanitized_url, engine='zarr', chunks={}) as ds:
-            logger.info('✅ Successfully opened dataset. Generating HTML representation.')
-            html = ds._repr_html_().strip()
+        ds = xr.open_dataset(sanitized_url, engine='zarr', chunks={})
+        logger.info('✅ Successfully opened dataset. Generating HTML representation.')
+        html = ds._repr_html_().strip()
 
         del ds
         logger.info('🧹 Cleaned up dataset object')
