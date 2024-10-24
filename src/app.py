@@ -2,6 +2,7 @@ from __future__ import annotations
 
 import os
 import traceback
+import typing
 from contextlib import asynccontextmanager
 
 import pydantic
@@ -14,6 +15,12 @@ from fastapi_cache.decorator import cache
 
 from .helpers import sanitize_url
 from .log import get_logger
+
+
+class XarrayOpenKwargs(pydantic.BaseModel):
+    engine: typing.Literal['zarr', 'kerchunk'] = 'zarr'
+    chunks: dict = {}
+
 
 origins = ['*']
 
@@ -75,8 +82,15 @@ async def xarray(
         description='URL to a zarr store',
         example='https://ncsa.osn.xsede.org/Pangeo/pangeo-forge/HadISST-feedstock/hadisst.zarr',
     ),
+    xarray_open_kwargs: str = Query(
+        default='{"engine": "zarr", "chunks": {}}',
+        description='Keyword arguments for xr.open_dataset',
+    ),
 ):
-    logger.info(f'🚀 Starting to process request for URL: {url}')
+    kwargs_model = XarrayOpenKwargs.model_validate_json(xarray_open_kwargs)
+    logger.info(
+        f'🚀 Starting to process request for URL: {url} with kwargs: {kwargs_model.model_dump()}'
+    )
 
     import time
 
@@ -93,7 +107,7 @@ async def xarray(
 
     try:
         logger.info(f'📂 Attempting to open dataset from URL: {url}')
-        ds = xr.open_dataset(sanitized_url, engine='zarr', chunks={})
+        ds = xr.open_dataset(sanitized_url, **kwargs_model.model_dump())
         logger.info('✅ Successfully opened dataset. Generating HTML representation.')
         html = ds._repr_html_().strip()
 
