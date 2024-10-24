@@ -2,7 +2,7 @@
 
 This is a simple web app/api that allows retreiving the Xarray HTML representation of a dataset. This is useful for rendering Xarray datasets repr in a web page.
 
-We are currently using this in the LEAP data catalog to render the Xarray repr of dataset in the feedstock page.
+We are currently using this in the [LEAP data catalog](https://catalog.leap.columbia.edu/) to render the Xarray repr of dataset in the feedstock page.
 
 ## Usage
 
