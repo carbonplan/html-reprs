@@ -7,19 +7,19 @@ primary_region = "dfw"
 
 [build]
 builder = "heroku/builder:24"
-buildpacks = ["heroku/buildpack-python:0.17.0"]
+buildpacks = ["heroku/buildpack-python:0.19.1"]
 
 
 [[vm]]
-size = "shared-cpu-2x"
-memory = "4096mb"
+size = "shared-cpu-4x"
+memory = "8192mb"
 
 
 [env]
 PORT = "8000"
 
 [processes]
-app = "gunicorn -w 1 -k uvicorn.workers.UvicornWorker src.app:app"
+app = "gunicorn -w 2 -k uvicorn.workers.UvicornWorker -t 200 src.app:app"
 
 [[services]]
 processes = ["app"]
