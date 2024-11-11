@@ -40,7 +40,7 @@ async def lifespan_event(app: FastAPI):
 
     # set up cache
     logger.info('🔥 Setting up cache...')
-    expiration = int(60 * 60 * 1)  # 24 hours
+    expiration = int(60 * 15 * 1)  # 15 minutes
     cache_status_header = 'x-html-reprs-cache'
     FastAPICache.init(
         InMemoryBackend(),
