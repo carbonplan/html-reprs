@@ -6,8 +6,8 @@ gcsfs
 gunicorn
 s3fs
 uvicorn
-xarray>=2022.9
-zarr
+xarray ==2024.9.0
+zarr ==2.18.3
 fastapi-cache2 @ git+https://github.com/andersy005/fastapi-cache@pydantic-v2-compat # for pydantic v2 compatilibity
 universal_pathlib
 kerchunk >=0.2.6
