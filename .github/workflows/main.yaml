@@ -23,6 +23,6 @@ jobs:
       name: ${{ github.ref == 'refs/heads/main' && 'production' || 'staging' }}
       url: ${{ github.ref == 'refs/heads/main' && env.PRODUCTION_URL || env.STAGING_URL }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: superfly/flyctl-actions/setup-flyctl@master
       - run: flyctl deploy --remote-only
